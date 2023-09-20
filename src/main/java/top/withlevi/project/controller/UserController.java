@@ -124,8 +124,16 @@ public class UserController {
         }
         User user = new User();
         BeanUtils.copyProperties(userAddRequest, user);
-        boolean result = userService.save(user);
-        if (!result) {
+        String userAccount = userAddRequest.getUserAccount();
+        String userPassword = userAddRequest.getUserPassword();
+
+        if (StringUtils.isAnyBlank(userAccount,userPassword)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR,"请求参数异常");
+        }
+
+
+        long result = userService.userRegister(userAccount,userPassword,userPassword);
+        if (result < 0) {
             throw new BusinessException(ErrorCode.OPERATION_ERROR);
         }
         return ResultUtils.success(user.getId());
