@@ -1,22 +1,26 @@
-# SpringBoot 项目初始模板
-
+# LeviAPI
+> this project platform for manageing and distributing api request
+> 
 > by [Levi Blog](https://blog.withlevi.top)
 
-Java SpringBoot 项目初始模板，整合了常用框架和示例代码，大家可以在此基础上快速开发自己的项目。
 
-## 模板功能
 
-- Spring Boot 2.7.0（贼新）
+
+
+
+## Technologies utilized in the platform
+
+- Spring Boot 2.7.0
 - Spring MVC
-- MySQL 驱动
+- MySQL driver
 - MyBatis
 - MyBatis Plus
-- Spring Session Redis 分布式登录
+- Spring Session Redis  Distributed Login
 - Spring AOP
-- Apache Commons Lang3 工具类
-- Lombok 注解
-- Swagger + Knife4j 接口文档
-- Spring Boot 调试工具和项目处理器
+- Apache Commons Lang3  Tools class
+- Lombok annotate
+- Swagger + Knife4j interface document
+- Spring Boot  Debugging Tools and Project Processors
 - 全局请求响应拦截器（记录日志）
 - 全局异常处理器
 - 自定义错误码
