@@ -3,14 +3,13 @@ package top.withlevi.project.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.implementation.bytecode.Throw;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
+import top.withlevi.leviapiclientsdk.client.LeviApiClient;
 import top.withlevi.project.annotation.AuthCheck;
-import top.withlevi.project.common.BaseResponse;
-import top.withlevi.project.common.DeleteRequest;
-import top.withlevi.project.common.ErrorCode;
-import top.withlevi.project.common.ResultUtils;
+import top.withlevi.project.common.*;
 import top.withlevi.project.constant.CommonConstant;
 import top.withlevi.project.exception.BusinessException;
 import top.withlevi.project.model.dto.interfaceinfo.InterfaceInfoAddRequest;
@@ -18,6 +17,7 @@ import top.withlevi.project.model.dto.interfaceinfo.InterfaceInfoQueryRequest;
 import top.withlevi.project.model.dto.interfaceinfo.InterfaceInfoUpdateRequest;
 import top.withlevi.project.model.entity.InterfaceInfo;
 import top.withlevi.project.model.entity.User;
+import top.withlevi.project.model.enums.InterfaceInfoStatusEnum;
 import top.withlevi.project.service.InterfaceInfoService;
 import top.withlevi.project.service.UserService;
 
@@ -40,6 +40,9 @@ public class InterfaceInfoController {
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private LeviApiClient leviApiClient;
 
     // region 增删改查
 
@@ -105,7 +108,7 @@ public class InterfaceInfoController {
      */
     @PostMapping("/update")
     public BaseResponse<Boolean> updateInterfaceInfo(@RequestBody InterfaceInfoUpdateRequest interfaceInfoUpdateRequest,
-                                            HttpServletRequest request) {
+                                                     HttpServletRequest request) {
         if (interfaceInfoUpdateRequest == null || interfaceInfoUpdateRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -127,6 +130,7 @@ public class InterfaceInfoController {
         boolean result = interfaceInfoService.updateById(interfaceInfo);
         return ResultUtils.success(result);
     }
+
 
     /**
      * 根据 id 获取
@@ -195,5 +199,84 @@ public class InterfaceInfoController {
     }
 
     // endregion
+
+    /**
+     * 发布
+     *
+     * @param idRequest
+     * @param request
+     * @return
+     */
+    @PostMapping("/online")
+    @AuthCheck(mustRole = "admin")
+    public BaseResponse<Boolean> onlineInterfaceInfo(@RequestBody IdRequest idRequest,
+                                                     HttpServletRequest request) {
+
+        if (idRequest == null || idRequest.getId() <= 0) {
+
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+
+        }
+
+        long id = idRequest.getId();
+
+        // 判断是否存在
+        InterfaceInfo oldInterfaceInfo = interfaceInfoService.getById(id);
+        if (oldInterfaceInfo == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+
+        // 判断该接口是否可以调用
+        top.withlevi.leviapiclientsdk.model.User user = new top.withlevi.leviapiclientsdk.model.User();
+        user.setUserName("xiaomijiao");
+        String username = leviApiClient.getUsernameByPost(user);
+        if (StringUtils.isBlank(username)) {
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "接口验证失败");
+        }
+
+
+        // 仅本人或管理员可修改
+        InterfaceInfo interfaceInfo = new InterfaceInfo();
+        interfaceInfo.setId(id);
+        interfaceInfo.setStatus(InterfaceInfoStatusEnum.ONLINE.getValue());
+
+        boolean result = interfaceInfoService.updateById(interfaceInfo);
+        return ResultUtils.success(result);
+    }
+
+    /**
+     * 下线
+     *
+     * @param idRequest
+     * @param request
+     * @return
+     */
+    @PostMapping("/offline")
+    @AuthCheck(mustRole = "admin")
+    public BaseResponse<Boolean> offlineInterfaceInfo(@RequestBody IdRequest idRequest,
+                                                      HttpServletRequest request) {
+        if (idRequest == null || idRequest.getId() <= 0) {
+
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+
+        }
+
+        long id = idRequest.getId();
+
+        // 判断是否存在
+        InterfaceInfo oldInterfaceInfo = interfaceInfoService.getById(id);
+        if (oldInterfaceInfo == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+
+
+        // 仅本人或管理员可修改
+        InterfaceInfo interfaceInfo = new InterfaceInfo();
+        interfaceInfo.setId(id);
+        interfaceInfo.setStatus(InterfaceInfoStatusEnum.OFFLINE.getValue());
+
+        boolean result = interfaceInfoService.updateById(interfaceInfo);
+        return ResultUtils.success(result);
+    }
 
 }
