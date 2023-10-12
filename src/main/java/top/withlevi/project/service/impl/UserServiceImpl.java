@@ -1,5 +1,7 @@
 package top.withlevi.project.service.impl;
 
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.crypto.digest.DigestUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import top.withlevi.project.common.ErrorCode;
@@ -61,10 +63,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             }
             // 2. 加密
             String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
-            // 3. 插入数据
+
+            // 3. 分配 accessKey、secretKey
+            String accesskey = DigestUtil.md5Hex(SALT + userAccount + RandomUtil.randomNumbers(5));
+            String secretkey = DigestUtil.md5Hex(SALT + userAccount + RandomUtil.randomNumbers(8));
+
+            // 4. 插入数据
             User user = new User();
             user.setUserAccount(userAccount);
             user.setUserPassword(encryptPassword);
+            user.setAccessKey(accesskey);
+            user.setSecretKey(secretkey);
             boolean saveResult = this.save(user);
             if (!saveResult) {
                 throw new BusinessException(ErrorCode.SYSTEM_ERROR, "注册失败，数据库错误");
@@ -152,6 +161,29 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         // 移除登录态
         request.getSession().removeAttribute(UserConstant.USER_LOGIN_STATE);
         return true;
+    }
+
+    @Override
+    public Integer reSignature(long userId) {
+        // 1. 查询用户
+        User user = userMapper.selectById(userId);
+        if (user == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+
+        // 2. 重新生成accessKey和secretKey
+        String accessKey = DigestUtil.md5Hex(SALT + user.getUserAccount() + RandomUtil.randomNumbers(5));
+        String secretKey = DigestUtil.md5Hex(SALT + user.getUserAccount() + RandomUtil.randomNumbers(8));
+
+        // 3. Setup accessKey and secretKey
+        user.setAccessKey(accessKey);
+        user.setSecretKey(secretKey);
+        int result = userMapper.updateById(user);
+        if (result < 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        return result;
+
     }
 
 }

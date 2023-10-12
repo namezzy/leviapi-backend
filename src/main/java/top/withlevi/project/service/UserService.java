@@ -2,6 +2,7 @@ package top.withlevi.project.service;
 
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import io.swagger.models.auth.In;
 import top.withlevi.project.model.entity.User;
 
 import javax.servlet.http.HttpServletRequest;
@@ -56,4 +57,13 @@ public interface UserService extends IService<User> {
      * @return
      */
     boolean userLogout(HttpServletRequest request);
+
+
+    /**
+     * 重新生成 accessKey 和 secretKey
+     *
+     * @param userId
+     * @return
+     */
+    public Integer reSignature(long userId);
 }

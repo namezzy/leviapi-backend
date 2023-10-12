@@ -127,12 +127,12 @@ public class UserController {
         String userAccount = userAddRequest.getUserAccount();
         String userPassword = userAddRequest.getUserPassword();
 
-        if (StringUtils.isAnyBlank(userAccount,userPassword)) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR,"请求参数异常");
+        if (StringUtils.isAnyBlank(userAccount, userPassword)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "请求参数异常");
         }
 
 
-        long result = userService.userRegister(userAccount,userPassword,userPassword);
+        long result = userService.userRegister(userAccount, userPassword, userPassword);
         if (result < 0) {
             throw new BusinessException(ErrorCode.OPERATION_ERROR);
         }
@@ -241,6 +241,19 @@ public class UserController {
         }).collect(Collectors.toList());
         userVOPage.setRecords(userVOList);
         return ResultUtils.success(userVOPage);
+    }
+
+
+    /**
+     * 重新生成accessKey 和 secretKey
+     *
+     * @param userId
+     * @return
+     */
+    @PostMapping("/resetKeys")
+    public BaseResponse<Integer> resetKeys(@RequestParam("userId") Long userId) {
+        Integer result = userService.reSignature(userId);
+        return ResultUtils.success(result);
     }
 
     // endregion
