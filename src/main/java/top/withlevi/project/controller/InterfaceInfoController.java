@@ -2,6 +2,7 @@ package top.withlevi.project.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.implementation.bytecode.Throw;
 import org.apache.commons.lang3.StringUtils;
@@ -13,6 +14,7 @@ import top.withlevi.project.common.*;
 import top.withlevi.project.constant.CommonConstant;
 import top.withlevi.project.exception.BusinessException;
 import top.withlevi.project.model.dto.interfaceinfo.InterfaceInfoAddRequest;
+import top.withlevi.project.model.dto.interfaceinfo.InterfaceInfoInvokeRequest;
 import top.withlevi.project.model.dto.interfaceinfo.InterfaceInfoQueryRequest;
 import top.withlevi.project.model.dto.interfaceinfo.InterfaceInfoUpdateRequest;
 import top.withlevi.project.model.entity.InterfaceInfo;
@@ -277,6 +279,51 @@ public class InterfaceInfoController {
 
         boolean result = interfaceInfoService.updateById(interfaceInfo);
         return ResultUtils.success(result);
+    }
+
+
+    /**
+     * 模拟请求接口
+     *
+     * @param interfaceInfoInvokeRequest
+     * @param request
+     * @return
+     */
+    @PostMapping("/invoke")
+    public BaseResponse<Object> invokeInterfaceInfo(@RequestBody InterfaceInfoInvokeRequest interfaceInfoInvokeRequest,
+                                                    HttpServletRequest request) {
+        if (interfaceInfoInvokeRequest == null || interfaceInfoInvokeRequest.getId() <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+
+        Long id = interfaceInfoInvokeRequest.getId();
+        String userRequestParams = interfaceInfoInvokeRequest.getUserRequestParams();
+
+
+        // 判断是否存在
+        InterfaceInfo oldInterfaceInfo = interfaceInfoService.getById(id);
+        if (oldInterfaceInfo == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+
+        if (oldInterfaceInfo.getStatus() == InterfaceInfoStatusEnum.OFFLINE.getValue()) {
+
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "接口已关闭");
+        }
+
+        User loginUser = userService.getLoginUser(request);
+        String accessKey = loginUser.getAccessKey();
+        String secretKey = loginUser.getSecretKey();
+
+        LeviApiClient tempClient = new LeviApiClient(accessKey, secretKey);
+
+        Gson gson = new Gson();
+        top.withlevi.leviapiclientsdk.model.User user = gson.fromJson(userRequestParams, top.withlevi.leviapiclientsdk.model.User.class);
+
+
+        String usernameByPost = tempClient.getUsernameByPost(user);
+
+        return ResultUtils.success(usernameByPost);
     }
 
 }
