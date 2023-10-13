@@ -230,7 +230,7 @@ public class InterfaceInfoController {
 
         // 判断该接口是否可以调用
         top.withlevi.leviapiclientsdk.model.User user = new top.withlevi.leviapiclientsdk.model.User();
-        user.setUserName("xiaomijiao");
+        user.setUsername("xiaomijiao");
         String username = leviApiClient.getUsernameByPost(user);
         if (StringUtils.isBlank(username)) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "接口验证失败");
