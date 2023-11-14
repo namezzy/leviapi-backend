@@ -2,8 +2,7 @@
 -- auto-generated definition
 create table interface_info
 (
-    id             bigint auto_increment comment '主键'
-        primary key,
+    id             bigint auto_increment comment '主键'primary key,
     name           varchar(256)                       not null comment '名称',
     description    varchar(256)                       not null comment '描述信息',
     url            varchar(512)                       not null comment '接口地址',
