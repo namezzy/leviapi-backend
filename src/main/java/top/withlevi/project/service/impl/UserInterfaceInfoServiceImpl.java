@@ -1,16 +1,13 @@
 package top.withlevi.project.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.apache.commons.lang3.StringUtils;
 import top.withlevi.project.common.ErrorCode;
 import top.withlevi.project.exception.BusinessException;
-import top.withlevi.project.model.entity.InterfaceInfo;
 import top.withlevi.project.model.entity.UserInterfaceInfo;
 import top.withlevi.project.service.UserInterfaceInfoService;
 import top.withlevi.project.mapper.UserInterfaceInfoMapper;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
 
 /**
  * @author Hello World
@@ -41,7 +38,21 @@ public class UserInterfaceInfoServiceImpl extends ServiceImpl<UserInterfaceInfoM
 
     }
 
+    @Override
+    public boolean invokeCount(long interfaceInfoId, long userId) {
 
+        if (interfaceInfoId <= 0 || userId <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+
+        UpdateWrapper<UserInterfaceInfo> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("interfaceInfoId", interfaceInfoId);
+        updateWrapper.eq("userId", userId);
+        updateWrapper.ge("leftNum",0);
+        updateWrapper.setSql("leftNum = leftNum - 1,totalNum = totalNum + 1");
+        return this.update(updateWrapper);
+
+    }
 }
 
 
