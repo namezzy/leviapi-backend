@@ -24,7 +24,7 @@ public class UserInterfaceInfoServiceTest {
     public void invokeCount() {
 
         boolean b = userInterfaceInfoService.invokeCount(1L, 1L);
-        System.out.println("Hello"+b);
+        System.out.println("Hello "+b);
         Assertions.assertTrue(b);
     }
 }
