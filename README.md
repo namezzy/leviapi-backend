@@ -35,3 +35,11 @@ The front-end of the project is not complex, but focuses more on the back-end, i
 
 访问 localhost:8080/api/doc.html 就能在线调试接口了，不需要前端配合啦~
 
+## Deploy
+
+1. Download source code 
+2. create database leviapi in MySql(sql file in sql folder)
+3. configure build environment by application yaml file
+4. build project by maven
+5. completed  enjoy it.
+
