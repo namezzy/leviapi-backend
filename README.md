@@ -2,10 +2,14 @@
 > this project platform for manageing and distributing api request
 > 
 > by [Levi Blog](https://blog.withlevi.top)
-
-
-
-
+> 
+>
+>
+# Project Description
+Provide API interfaces for developers to call the platform, based on Spring Boot back-end + React front-end full-stack microservice project.
+Administrators can access and publish interfaces, statistical analysis of the interface call situation; users can register and login and open the interface call privileges, 
+browse interfaces, online Users can register, login and open interface calling privileges, browse interfaces, debug online, and also use the client SDK to easily call interfaces in the code.
+The front-end of the project is not complex, but focuses more on the back-end, including rich programming skills and architectural design level knowledge.
 
 
 ## Technologies utilized in the platform
@@ -30,3 +34,4 @@
 - 示例 SQL（用户表）
 
 访问 localhost:8080/api/doc.html 就能在线调试接口了，不需要前端配合啦~
+
