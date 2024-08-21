@@ -25,15 +25,16 @@ The front-end of the project is not complex, but focuses more on the back-end, i
 - Lombok annotate
 - Swagger + Knife4j interface document
 - Spring Boot  Debugging Tools and Project Processors
-- 全局请求响应拦截器（记录日志）
-- 全局异常处理器
-- 自定义错误码
-- 封装通用响应类
-- 示例用户注册、登录、搜索功能
-- 示例单元测试类
-- 示例 SQL（用户表）
+- Global Request Response Interceptor (Log Recorder)
+- Global Exception Handler
+- Custom Error Code
+- Encapsulate General Response Class
+- Sample user registration, login, and search functions
+- Sample Unit Test Class
+- Example SQL (User Table)
 
-访问 localhost:8080/api/doc.html 就能在线调试接口了，不需要前端配合啦~
+Visit： http://localhost:8080/api/doc.html 
+You can now debug the interface online, no need for frontend coordination!
 
 ## Deploy
 
