@@ -128,7 +128,7 @@ public class UserController {
         String userPassword = userAddRequest.getUserPassword();
 
         if (StringUtils.isAnyBlank(userAccount, userPassword)) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "请求参数异常");
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "请求参数异常,请检查之后重试");
         }
 
 
