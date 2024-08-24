@@ -24,7 +24,7 @@ INSERT INTO interface_info (id, name, description, url, requestParams, responseH
 VALUES (1, '接口1', '接口1描述信息', 'http://www.test.com/api1', '{"pageNo": 1, "pageSize": 10}',
         '{"code": 200, "message": "success"}', '{"Content-Type": "application/json"}', 1, 'GET', 1,
         '2023-02-01 12:00:00', '2023-02-01 12:00:00', 0),
-       (2, '接口2', '接口2描述信息', 'http://www.test.com/api2', '{"username": "zhangsan"}',
+       (2, '接口2', '接口2描述信息', 'http://www.test.com/api2', '{"username": "levi"}',
         '{"code": 200, "message": "success"}', '{"Content-Type": "application/json"}', 1, 'POST', 1,
         '2023-02-02 12:00:00', '2023-02-02 12:00:00', 0),
        (3, '接口3', '接口3描述信息', 'http://www.test.com/api3', '{"id": 123}', '{"code": 200, "message": "success"}',
